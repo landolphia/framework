@@ -56,7 +56,7 @@ class ConsoleFormatter extends Formatter {
 	
 class FileFormatter extends Formatter {
 	public String getDate (long t) {
-		DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:SSSS");
+		DateFormat df = new SimpleDateFormat("HH:mm:ss:SSSS");
 		Date date = new Date(t);
 		return df.format(date);
 	}
