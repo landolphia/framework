@@ -16,6 +16,7 @@ native/
 
 #backups and vim swaps
 *.~
+*.bak
 *.swp
 
 #temp building directory for lwjgl3
