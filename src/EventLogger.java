@@ -96,7 +96,7 @@ public class EventLogger {
 		try {
 			FileHandler fileHandler = new FileHandler("framework.log");
 			//TODO Level.FINE if debug==true
-			fileHandler.setLevel(Level.INFO);
+			fileHandler.setLevel(Level.FINE);
 			fileHandler.setFormatter(new FileFormatter());
 			logger.addHandler(fileHandler);
 		} catch (IOException e) {

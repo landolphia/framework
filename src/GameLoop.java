@@ -1,6 +1,7 @@
 package framework;
 
 import framework.EventLogger;
+import framework.GLWrapper;
 
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.*;
@@ -16,6 +17,8 @@ import static org.lwjgl.system.MemoryUtil.*;
 public class GameLoop {
 	private EventLogger logger;
 	private boolean silent, verbose;
+
+	private GLWrapper GLW;
 
 	final private String APP_VERSION = "0.0.0";
 	final private String APP_NAME = "FrameWork";
@@ -44,6 +47,7 @@ public class GameLoop {
 		logger.flow("Framework init.");
 		if (argsRes) logger.info("Invalid argument found (and ignored).");
 
+		GLW = new GLWrapper(logger);
 
 		done = 0;
 		previous = GLFW.glfwGetTime();
@@ -64,10 +68,12 @@ public class GameLoop {
 				lag -= MS_PER_UPDATE;
 			}
 
-			done = 1;
+			done = GLW.display((float) lag / MS_PER_UPDATE);
 			//TODO find a better way to yield
 			try { Thread.sleep(1);} catch (Exception e) { logger.error("Something happened while trying to yield: " + e.getMessage());}
 		}
+
+		GLW.release();
 	}
 
 	public static void main(String[] args) {
