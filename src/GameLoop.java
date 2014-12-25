@@ -14,6 +14,11 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
+import java.io.File;
+import org.lwjgl.LWJGLUtil;
+import org.lwjgl.LWJGLUtil.Platform;
+
+
 public class GameLoop {
 	private EventLogger logger;
 	private boolean silent, verbose;
@@ -33,18 +38,43 @@ public class GameLoop {
 	public void run(String[] args) {
 		System.out.println(APP_NAME + " is launching...\n");
 
+		logger = new EventLogger(APP_VERSION, silent, verbose);
+		logger.flow("Framework init.");
+		logger.info("Current platform = " + setNatives());
+
 		init(args);
 		gameloop();
 
 		logger.flow("Bye.");
 	}
 
+	private String setNatives() {
+		//TODO also find out x86/x64
+		File lib;
+		Platform platform = LWJGLUtil.getPlatform();
+		switch (platform) {
+			case WINDOWS:
+				lib = new File("../native/windows/x64");
+				break;
+			case LINUX:
+				lib = new File("../native/linux/x64");
+				break;
+			case MACOSX:
+				lib = new File("../native/macosx/");
+				break;
+			default:
+				throw new RuntimeException("Unsupported OS: " + System.getProperty("os.name"));
+		}
+
+		System.setProperty("org.lwjgl.librarypath", lib.getAbsolutePath());
+
+		return platform.getName();
+	}
+
 	private void init(String[] args) {
 		silent = false;
 		verbose = false;
 		boolean argsRes = !CLIArguments.parseArgs(this, args);
-		logger = new EventLogger(APP_VERSION, silent, verbose);
-		logger.flow("Framework init.");
 		if (argsRes) logger.info("Invalid argument found (and ignored).");
 
 		GLW = new GLWrapper(logger);
