@@ -1,15 +1,11 @@
 #version 130
 
 in vec4 position;
-in vec4 color;
+#in vec4 color;
 
-smooth out vec4 theColor;
-
-uniform mat4 cameraToClipMatrix;
-uniform mat4 modelToCameraMatrix;
+#smooth out vec4 theColor;
 
 void main() {
-	vec4 cameraPos = modelToCameraMatrix * position;
-	gl_Position = cameraToClipMatrix * cameraPos;
-	theColor = color;
+	gl_Position = position;
+	#theColor = color;
 }

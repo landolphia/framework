@@ -106,9 +106,9 @@ public class EventLogger {
 
 		ConsoleHandler consoleHandler = new ConsoleHandler();
 		consoleHandler.setFormatter(new ConsoleFormatter());
-		if (silent) consoleHandler.setLevel(Level.WARNING);
+		if (silent) consoleHandler.setLevel(Level.SEVERE);
 		else if (verbose) consoleHandler.setLevel(Level.FINE);
-		else consoleHandler.setLevel(Level.INFO);
+		else consoleHandler.setLevel(Level.WARNING);
 		logger.addHandler(consoleHandler);
 
 		if (version == null) version = "NO_VERSION";

@@ -38,10 +38,6 @@ public class GameLoop {
 	public void run(String[] args) {
 		System.out.println(APP_NAME + " is launching...\n");
 
-		logger = new EventLogger(APP_VERSION, silent, verbose);
-		logger.flow("Framework init.");
-		logger.info("Current platform = " + setNatives());
-
 		init(args);
 		gameloop();
 
@@ -76,6 +72,10 @@ public class GameLoop {
 		verbose = false;
 		boolean argsRes = !CLIArguments.parseArgs(this, args);
 		if (argsRes) logger.info("Invalid argument found (and ignored).");
+
+		logger = new EventLogger(APP_VERSION, silent, verbose);
+		logger.flow("Framework init.");
+		logger.info("Current platform = " + setNatives());
 
 		GLW = new GLWrapper(logger);
 

@@ -154,7 +154,8 @@ public class GLWrapper {
 		if (current >= fpsFlushTime) {
 			fps = frames;
 			frames = 0;
-			fpsFlushTime += 1000;
+			fpsFlushTime += 1.0;
+			logger.debug(fps + " FPS");
 		}
 
 		totalFrames++;
@@ -168,27 +169,21 @@ public class GLWrapper {
 	}
 
 	public int display (float interpol) {
-		// The reason update is here, and not in the main game loop is
+		//XXX The reason update is here, and not in the main game loop is
 		//that the update performed here, while time dependent, does
 		//not have the same requirements as the game logic and input's
 		//GLWrapper should do its own time keeping (?)
 		//updates
 		update();
 		//TODO Interpolation
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		renderer.display();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
-		ready3D();
 
 		//for (GridCell c : world.model()) {
 			//renderer.render(c.model);
 		//}
-
-		renderer.display();
-
-		//ready2D();
-		//ready2DText();
 
 		return glfwWindowShouldClose(window); //TODO return done boolean
 	}
