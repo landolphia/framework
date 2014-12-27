@@ -56,7 +56,7 @@ public class GameLoop {
 				lib = new File("../native/linux/x64");
 				break;
 			case MACOSX:
-				lib = new File("../native/macosx/");
+				lib = new File("../native/macosx/x64");
 				break;
 			default:
 				throw new RuntimeException("Unsupported OS: " + System.getProperty("os.name"));
