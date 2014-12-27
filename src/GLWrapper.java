@@ -108,7 +108,6 @@ public class GLWrapper {
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -119,39 +118,6 @@ public class GLWrapper {
 		if ( window == NULL ) {
 			throw new RuntimeException("Failed to create the GL window.");
 		}
-	}
-
-	private void ready3D() {
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glClearColor(0.2f, 0.2f, 0.4f, 1.0f);
-
-		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glLoadIdentity();
-		//GLU.gluPerspective(45.0f, ((float) WIDTH) / ((float) HEIGHT), 0.1f, 100.0f);
-		GL11.glMatrixMode(GL11.GL_MODELVIEW);
-		GL11.glHint(GL11.GL_PERSPECTIVE_CORRECTION_HINT, GL11.GL_NICEST);
-		GL11.glLoadIdentity();
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-
-		GL11.glLoadIdentity();
-	}
-
-	private void ready2DText() { ready2D(true);}
-	private void ready2D() { ready2D(false);}
-
-	private void ready2D(boolean text) {
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glClearColor(0.2f, 0.4f, 0.2f, 1.0f);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glLoadIdentity();
-		if (text)
-			GL11.glOrtho(0, WIDTH, HEIGHT, 0, 1, -1);
-		else	GL11.glOrtho(0, WIDTH, 0, HEIGHT, 1, -1);
-		GL11.glMatrixMode(GL11.GL_MODELVIEW);
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
 	}
 
 	public void updateFPS() {
@@ -169,8 +135,6 @@ public class GLWrapper {
 	
 	public void update () {
 		updateFPS();
-		//bubbles.update(delta);
-		//factory.update(delta);
 	}
 
 	public int display (float interpol) {

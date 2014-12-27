@@ -33,16 +33,20 @@ public class GLRenderer {
 	private int vao;
 
 	private static float[] vertexData = {
-		0.0f,    0.5f, 0.0f, 1.0f,
-		0.5f, -0.366f, 0.0f, 1.0f,
-		-0.5f, -0.366f, 0.0f, 1.0f,
+		-0.5f, -0.5f, 0.0f, 1.0f,
+		0.5f, -0.5f, 0.0f, 1.0f,
+		0.0f, 0.5f, 0.0f, 1.0f,
+
+		-0.5f, 0.75f, 0.0f, 1.0f,
+		0.5f, 0.75f, 0.0f, 1.0f,
+		0.0f, 0.95f, 0.0f, 1.0f,
 	};
 
 	public GLRenderer (EventLogger l, long w) {
 		logger = l;
 		logger.flow("GLRenderer init.");
 
-		shaders = new GLShaders(l);
+		shaders = new GLShaders(logger);
 
 		window = w;
 
@@ -93,18 +97,18 @@ public class GLRenderer {
 	//http://www.acamara.es/blog/tag/lwjgl/
 	{
 		GL11.glViewport(0, 0, width, height);
-	};
+	}
 
 	private void init () {
 		initializeProgram();
 		initializeVertexBuffer();
 		initializeVAO();
 
-		//GLFW.glfwSetFramebufferSizeCallback(window,  getFramebufferSizeCallback());
+		GLFW.glfwSetFramebufferSizeCallback(window,  getFramebufferSizeCallback());
 	}
 
 	public void display () {
-		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		GL11.glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
 		GL20.glUseProgram(theProgram);
@@ -113,10 +117,9 @@ public class GLRenderer {
 		GL20.glEnableVertexAttribArray(0);
 		GL20.glVertexAttribPointer(0, 4, GL11.GL_FLOAT, false, 0, 0);
 
-		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
+		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6);
 
 		GL20.glDisableVertexAttribArray(0);
-		GL20.glDisableVertexAttribArray(1);
 		GL20.glUseProgram(0);
 	}
 }

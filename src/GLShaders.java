@@ -42,8 +42,7 @@ public class GLShaders {
 		int shader = GL20.glCreateShader(eShaderType);
 
 		String shaderCode = null;
-		try
-		{
+		try {
 			shaderCode = readShader(shaderFileName);
 		} catch (Exception e) {
 			logger.debug("loadShader(" + eShaderType + ", " + shaderFileName + ") failed:\n" + e.getMessage()); e.printStackTrace();
