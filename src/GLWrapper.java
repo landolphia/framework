@@ -109,7 +109,12 @@ public class GLWrapper {
 		glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 		window = glfwCreateWindow(WIDTH, HEIGHT, "REPLACE THIS TEXT", NULL, NULL);
+
 
 		if ( window == NULL ) {
 			throw new RuntimeException("Failed to create the GL window.");

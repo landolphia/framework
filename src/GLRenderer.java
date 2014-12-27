@@ -32,12 +32,11 @@ public class GLRenderer {
 	private int vertexBufferObject;
 	private int vao;
 
-	private static float[] vertexPositions = { 
-		0.75f, 0.75f, 0.0f, 1.0f,
-		0.75f, -0.75f, 0.0f, 1.0f,
-		-0.75f, -0.75f, 0.0f, 1.0f,
-	};  
-
+	private static float[] vertexData = {
+		0.0f,    0.5f, 0.0f, 1.0f,
+		0.5f, -0.366f, 0.0f, 1.0f,
+		-0.5f, -0.366f, 0.0f, 1.0f,
+	};
 
 	public GLRenderer (EventLogger l, long w) {
 		logger = l;
@@ -53,8 +52,8 @@ public class GLRenderer {
 	private void initializeProgram () {
 		ArrayList<Integer> shaderList = new ArrayList<Integer>();
 
-		shaderList.add(shaders.loadShader(GL20.GL_VERTEX_SHADER, "FragPosition.vert"));
-		shaderList.add(shaders.loadShader(GL20.GL_FRAGMENT_SHADER, "FragPosition.frag"));
+		shaderList.add(shaders.loadShader(GL20.GL_VERTEX_SHADER, "default.vert"));
+		shaderList.add(shaders.loadShader(GL20.GL_FRAGMENT_SHADER, "default.frag"));
 		theProgram = shaders.createProgram(shaderList);
 		//XXX why removed in Tut 02?
 		//for(int shader : shaderList) {
@@ -63,8 +62,8 @@ public class GLRenderer {
 	}
 
 	private void initializeVertexBuffer() {
-		FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertexPositions.length);
-		verticesBuffer.put(vertexPositions);
+		FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertexData.length);
+		verticesBuffer.put(vertexData);
 		verticesBuffer.flip();
 
 		vertexBufferObject = GL15.glGenBuffers();
@@ -105,7 +104,7 @@ public class GLRenderer {
 	}
 
 	public void display () {
-		GL11.glClearColor(0.1f, 0.1f, 0.3f, 0.0f);
+		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
 		GL20.glUseProgram(theProgram);
@@ -117,6 +116,7 @@ public class GLRenderer {
 		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
 
 		GL20.glDisableVertexAttribArray(0);
+		GL20.glDisableVertexAttribArray(1);
 		GL20.glUseProgram(0);
 	}
 }
