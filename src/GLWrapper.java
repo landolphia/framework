@@ -133,18 +133,12 @@ public class GLWrapper {
 		frames++;
 	}
 	
-	public void update (long delta) {
+	public void update (double delta) {
 		renderer.update(delta);
-		updateFPS();
 	}
 
-	public int display (float interpol) {
-		//XXX The reason update is here, and not in the main game loop is
-		//that the update performed here, while time dependent, does
-		//not have the same requirements as the game logic and input's
-		//GLWrapper should do its own time keeping (?)
-		//updates
-		update();
+	public int display (double interpol) {
+		updateFPS();
 		//TODO Interpolation
 		renderer.display();
 		glfwSwapBuffers(window);

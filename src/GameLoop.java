@@ -1,5 +1,6 @@
 package framework;
 
+
 import framework.EventLogger;
 import framework.GLWrapper;
 
@@ -27,7 +28,7 @@ public class GameLoop {
 
 	final private String APP_VERSION = "0.0.0";
 	final private String APP_NAME = "FrameWork";
-	final private long MS_PER_UPDATE = 10;
+	final private double S_PER_UPDATE = 0.01;
 
 	double current, previous, lag;
 	int done;
@@ -92,14 +93,15 @@ public class GameLoop {
 			lag += elapsed;
 
 			int updatePasses = 0;
-			while ( lag >= MS_PER_UPDATE ) {
+			while ( lag >= S_PER_UPDATE ) {
 				if (updatePasses >= 20) break;
 				updatePasses++;
-				lag -= MS_PER_UPDATE;
-				GLW.update(MS_PER_UPDATE);
+				lag -= S_PER_UPDATE;
+				GLW.update(S_PER_UPDATE);
 			}
+			logger.debug("logic passes: " + updatePasses);
 
-			done = GLW.display((float) lag / MS_PER_UPDATE);
+			done = GLW.display(lag / S_PER_UPDATE);
 			//TODO find a better way to yield
 			try { Thread.sleep(1);} catch (Exception e) { logger.error("Something happened while trying to yield: " + e.getMessage());}
 		}

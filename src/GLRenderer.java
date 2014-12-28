@@ -36,10 +36,12 @@ public class GLRenderer {
 		-0.5f, -0.5f, 0.0f, 1.0f,
 		0.5f, -0.5f, 0.0f, 1.0f,
 		0.0f, 0.5f, 0.0f, 1.0f,
-		-0.5f, 0.75f, 0.0f, 1.0f,
-		0.5f, 0.75f, 0.0f, 1.0f,
-		0.0f, 0.95f, 0.0f, 1.0f,
 	};
+
+	private double accumulator;
+	private float xoff, yoff;
+	private int offsetLocation;
+
 
 	public GLRenderer (EventLogger l, long w) {
 		logger = l;
@@ -50,6 +52,9 @@ public class GLRenderer {
 		window = w;
 
 		init();
+		accumulator = 0;
+		xoff = 0.0f;
+		yoff = 0.0f;
 	}
 
 	private void initializeProgram () {
@@ -58,6 +63,9 @@ public class GLRenderer {
 		shaderList.add(shaders.loadShader(GL20.GL_VERTEX_SHADER, "default.vert"));
 		shaderList.add(shaders.loadShader(GL20.GL_FRAGMENT_SHADER, "default.frag"));
 		theProgram = shaders.createProgram(shaderList);
+	
+		offsetLocation = GL20.glGetUniformLocation(theProgram, "offset");
+
 		//XXX why removed in Tut 02?
 		//for(int shader : shaderList) {
 		//      GL20.glDeleteShader(shader);
@@ -106,10 +114,12 @@ public class GLRenderer {
 		GLFW.glfwSetFramebufferSizeCallback(window,  getFramebufferSizeCallback());
 	}
 
-	public void update (int delta) {
-		accumulator+=delta;
-		xoff = (float)Math.cos(accumulator / 100) * 0.5f;                                                                                                         
-		yoff = (float)Math.sin(accumulator / 100) * 0.5f;
+
+
+	public void update (double delta) {
+		accumulator += delta;
+		xoff = (float)Math.cos(accumulator * 2) * 0.5f; 
+		yoff = (float)Math.sin(accumulator * 4) * 0.5f;
 	}
 
 
@@ -118,6 +128,8 @@ public class GLRenderer {
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
 		GL20.glUseProgram(theProgram);
+
+		GL20.glUniform2f(offsetLocation, xoff, yoff);	
 
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexBufferObject);
 		GL20.glEnableVertexAttribArray(0);
