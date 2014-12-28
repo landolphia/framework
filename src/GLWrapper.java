@@ -133,7 +133,8 @@ public class GLWrapper {
 		frames++;
 	}
 	
-	public void update () {
+	public void update (long delta) {
+		renderer.update(delta);
 		updateFPS();
 	}
 

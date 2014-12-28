@@ -96,6 +96,7 @@ public class GameLoop {
 				if (updatePasses >= 20) break;
 				updatePasses++;
 				lag -= MS_PER_UPDATE;
+				GLW.update(MS_PER_UPDATE);
 			}
 
 			done = GLW.display((float) lag / MS_PER_UPDATE);

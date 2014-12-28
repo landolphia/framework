@@ -36,7 +36,6 @@ public class GLRenderer {
 		-0.5f, -0.5f, 0.0f, 1.0f,
 		0.5f, -0.5f, 0.0f, 1.0f,
 		0.0f, 0.5f, 0.0f, 1.0f,
-
 		-0.5f, 0.75f, 0.0f, 1.0f,
 		0.5f, 0.75f, 0.0f, 1.0f,
 		0.0f, 0.95f, 0.0f, 1.0f,
@@ -106,6 +105,13 @@ public class GLRenderer {
 
 		GLFW.glfwSetFramebufferSizeCallback(window,  getFramebufferSizeCallback());
 	}
+
+	public void update (int delta) {
+		accumulator+=delta;
+		xoff = (float)Math.cos(accumulator / 100) * 0.5f;                                                                                                         
+		yoff = (float)Math.sin(accumulator / 100) * 0.5f;
+	}
+
 
 	public void display () {
 		GL11.glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
