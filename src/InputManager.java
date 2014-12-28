@@ -53,8 +53,6 @@ public class InputManager {
 				if (a != null) {
 					//TODO, compare action's TRIGGER (to redo), with method's (int action)
 					a.command.execute();
-				} else {
-					logger.debug("This key is not linked to any action. Move along.");
 				}
 			}
 		};
