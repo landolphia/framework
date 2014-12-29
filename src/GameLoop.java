@@ -99,7 +99,6 @@ public class GameLoop {
 				lag -= S_PER_UPDATE;
 				GLW.update(S_PER_UPDATE);
 			}
-			logger.debug("logic passes: " + updatePasses);
 
 			done = GLW.display(lag / S_PER_UPDATE);
 			//TODO find a better way to yield

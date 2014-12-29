@@ -40,7 +40,7 @@ public class GLRenderer {
 
 	private double accumulator;
 	private float xoff, yoff;
-	private int offsetLocation;
+	private int elapsedTimeUniform;
 
 
 	public GLRenderer (EventLogger l, long w) {
@@ -64,7 +64,12 @@ public class GLRenderer {
 		shaderList.add(shaders.loadShader(GL20.GL_FRAGMENT_SHADER, "default.frag"));
 		theProgram = shaders.createProgram(shaderList);
 	
-		offsetLocation = GL20.glGetUniformLocation(theProgram, "offset");
+		elapsedTimeUniform = GL20.glGetUniformLocation(theProgram, "time");
+		int loopDurationUniform = GL20.glGetUniformLocation(theProgram, "loopDuration");
+
+		GL20.glUseProgram(theProgram);
+		GL20.glUniform1f(loopDurationUniform, 3.0f);
+		GL20.glUseProgram(0);
 
 		//XXX why removed in Tut 02?
 		//for(int shader : shaderList) {
@@ -129,7 +134,7 @@ public class GLRenderer {
 
 		GL20.glUseProgram(theProgram);
 
-		GL20.glUniform2f(offsetLocation, xoff, yoff);	
+		GL20.glUniform1f(elapsedTimeUniform, (float)accumulator);
 
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexBufferObject);
 		GL20.glEnableVertexAttribArray(0);
