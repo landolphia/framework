@@ -66,9 +66,11 @@ public class GLRenderer {
 	
 		elapsedTimeUniform = GL20.glGetUniformLocation(theProgram, "time");
 		int loopDurationUniform = GL20.glGetUniformLocation(theProgram, "loopDuration");
+		int fragLoopDUnif = GL20.glGetUniformLocation(theProgram, "fragLoopDuration");
 
 		GL20.glUseProgram(theProgram);
 		GL20.glUniform1f(loopDurationUniform, 3.0f);
+		GL20.glUniform1f(fragLoopDUnif, 2.0f);
 		GL20.glUseProgram(0);
 
 		//XXX why removed in Tut 02?

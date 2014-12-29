@@ -1,6 +1,7 @@
 #version 130
 
 in vec4 position;
+
 uniform float loopDuration;
 uniform float time;
 
