@@ -302,6 +302,11 @@ public class GLRenderer {
 		GL11.glCullFace(GL11.GL_BACK);
 		GL11.glFrontFace(GL11.GL_CW);
 
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glDepthMask(true);
+		GL11.glDepthFunc(GL11.GL_LEQUAL);
+		GL11.glDepthRange(0.0f, 1.0f);
+
 		GLFW.glfwSetFramebufferSizeCallback(window,  getFramebufferSizeCallback());
 	}
 
@@ -313,12 +318,13 @@ public class GLRenderer {
 
 	public void display () {
 		GL11.glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+		GL11.glClearDepth(1.0f);
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
 		GL20.glUseProgram(theProgram);
 
 		GL30.glBindVertexArray(vao1);
-		GL20.glUniform3f(offsetUniform, 0.0f, 0.0f, 0.0f);
+		GL20.glUniform3f(offsetUniform, 0.0f, 0.0f, -1.0f);
 		GL11.glDrawElements(GL11.GL_TRIANGLES, indexData.length, GL11.GL_UNSIGNED_SHORT, 0);
 
 		GL30.glBindVertexArray(vao2);
