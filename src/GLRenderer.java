@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL33;
 import org.lwjgl.glfw.*;
 
 import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 import org.lwjgl.BufferUtils;
 
 import java.util.ArrayList;
@@ -31,106 +32,129 @@ public class GLRenderer {
 	private static int FLOAT_BYTES = 4;
 
 	private int theProgram;
-	private int vertexBufferObject;
-	private int vao;
+	private int vertexBufferObject, indexBufferObject;
+	private int vao1, vao2;
+
+	private static final int numvertices = 36;
+
+	private static final float RIGHT_EXTENT = 0.8f;
+	private static final float LEFT_EXTENT = -RIGHT_EXTENT;
+	private static final float TOP_EXTENT = 0.2f;
+	private static final float MIDDLE_EXTENT = 0.0f;
+	private static final float BOTTOM_EXTENT = -TOP_EXTENT;
+	private static final float FRONT_EXTENT = -1.25f;
+	private static final float REAR_EXTENT = -1.75f;
 
 	private static float[] vertexData = {
-		0.25f,  0.25f, -1.25f, 1.0f,
-		0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
+		//Obj 1
+		LEFT_EXTENT, TOP_EXTENT, REAR_EXTENT,
+		LEFT_EXTENT, MIDDLE_EXTENT, FRONT_EXTENT,
+		RIGHT_EXTENT, MIDDLE_EXTENT, FRONT_EXTENT,
+		RIGHT_EXTENT, TOP_EXTENT, REAR_EXTENT,
 
-		0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
+		LEFT_EXTENT, BOTTOM_EXTENT, REAR_EXTENT,
+		LEFT_EXTENT, MIDDLE_EXTENT, FRONT_EXTENT,
+		RIGHT_EXTENT, MIDDLE_EXTENT, FRONT_EXTENT,
+		RIGHT_EXTENT, BOTTOM_EXTENT, REAR_EXTENT,
 
-		0.25f,  0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
-		0.25f, -0.25f, -2.75f, 1.0f,
+		LEFT_EXTENT, TOP_EXTENT, REAR_EXTENT,
+		LEFT_EXTENT, MIDDLE_EXTENT,  FRONT_EXTENT,
+		LEFT_EXTENT, BOTTOM_EXTENT,  REAR_EXTENT,
 
-		0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
+		RIGHT_EXTENT,   TOP_EXTENT,             REAR_EXTENT,
+		RIGHT_EXTENT,   MIDDLE_EXTENT,  FRONT_EXTENT,
+		RIGHT_EXTENT,   BOTTOM_EXTENT,  REAR_EXTENT,
 
-		-0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
+		LEFT_EXTENT,    BOTTOM_EXTENT,  REAR_EXTENT,
+		LEFT_EXTENT,    TOP_EXTENT,             REAR_EXTENT,
+		RIGHT_EXTENT,   TOP_EXTENT,             REAR_EXTENT,
+		RIGHT_EXTENT,   BOTTOM_EXTENT,  REAR_EXTENT,
 
-		-0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
+		//Obj 2
+		TOP_EXTENT,             RIGHT_EXTENT,   REAR_EXTENT,
+		MIDDLE_EXTENT,  RIGHT_EXTENT,   FRONT_EXTENT,
+		MIDDLE_EXTENT,  LEFT_EXTENT,    FRONT_EXTENT,
+		TOP_EXTENT,             LEFT_EXTENT,    REAR_EXTENT,
 
-		0.25f,  0.25f, -1.25f, 1.0f,
-		0.25f, -0.25f, -2.75f, 1.0f,
-		0.25f, -0.25f, -1.25f, 1.0f,
+		BOTTOM_EXTENT,  RIGHT_EXTENT,   REAR_EXTENT,
+		MIDDLE_EXTENT,  RIGHT_EXTENT,   FRONT_EXTENT,
+		MIDDLE_EXTENT,  LEFT_EXTENT,    FRONT_EXTENT,
+		BOTTOM_EXTENT,  LEFT_EXTENT,    REAR_EXTENT,
 
-		0.25f,  0.25f, -1.25f, 1.0f,
-		0.25f,  0.25f, -2.75f, 1.0f,
-		0.25f, -0.25f, -2.75f, 1.0f,
+		TOP_EXTENT,             RIGHT_EXTENT,   REAR_EXTENT,
+		MIDDLE_EXTENT,  RIGHT_EXTENT,   FRONT_EXTENT,
+		BOTTOM_EXTENT,  RIGHT_EXTENT,   REAR_EXTENT,
 
-		0.25f,  0.25f, -2.75f, 1.0f,
-		0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
+		TOP_EXTENT,             LEFT_EXTENT,    REAR_EXTENT,
+		MIDDLE_EXTENT,  LEFT_EXTENT,    FRONT_EXTENT,
+		BOTTOM_EXTENT,  LEFT_EXTENT,    REAR_EXTENT,
 
-		0.25f,  0.25f, -2.75f, 1.0f,
-		-0.25f,  0.25f, -1.25f, 1.0f,
-		-0.25f,  0.25f, -2.75f, 1.0f,
+		BOTTOM_EXTENT,  RIGHT_EXTENT,   REAR_EXTENT,
+		TOP_EXTENT,             RIGHT_EXTENT,   REAR_EXTENT,
+		TOP_EXTENT,             LEFT_EXTENT,    REAR_EXTENT,
+		BOTTOM_EXTENT,  LEFT_EXTENT,    REAR_EXTENT,
 
-		0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-		0.25f, -0.25f, -1.25f, 1.0f,
+		//Obj 1 cols
+		0.75f, 0.75f, 1.0f, 1.0f,
+		0.75f, 0.75f, 1.0f, 1.0f,
+		0.75f, 0.75f, 1.0f, 1.0f,
+		0.75f, 0.75f, 1.0f, 1.0f,
 
-		0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -2.75f, 1.0f,
-		-0.25f, -0.25f, -1.25f, 1.0f,
-
-
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
+		0.0f, 0.5f, 0.0f, 1.0f,
+		0.0f, 0.5f, 0.0f, 1.0f,
+		0.0f, 0.5f, 0.0f, 1.0f,
+		0.0f, 0.5f, 0.0f, 1.0f,
 
 		1.0f, 0.0f, 0.0f, 1.0f,
 		1.0f, 0.0f, 0.0f, 1.0f,
 		1.0f, 0.0f, 0.0f, 1.0f,
 
+		0.8f, 0.8f, 0.8f, 1.0f,
+		0.8f, 0.8f, 0.8f, 1.0f,
+		0.8f, 0.8f, 0.8f, 1.0f,
+
+		0.5f, 0.5f, 0.0f, 1.0f,
+		0.5f, 0.5f, 0.0f, 1.0f,
+		0.5f, 0.5f, 0.0f, 1.0f,
+		0.5f, 0.5f, 0.0f, 1.0f,
+
+		//Obj 2 cols
+		1.0f, 0.0f, 0.0f, 1.0f,
 		1.0f, 0.0f, 0.0f, 1.0f,
 		1.0f, 0.0f, 0.0f, 1.0f,
 		1.0f, 0.0f, 0.0f, 1.0f,
 
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
+		0.5f, 0.5f, 0.0f, 1.0f,
+		0.5f, 0.5f, 0.0f, 1.0f,
+		0.5f, 0.5f, 0.0f, 1.0f,
+		0.5f, 0.5f, 0.0f, 1.0f,
 
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f, 1.0f, 1.0f,
+		0.0f, 0.5f, 0.0f, 1.0f,
+		0.0f, 0.5f, 0.0f, 1.0f,
+		0.0f, 0.5f, 0.0f, 1.0f,
+
+		0.75f, 0.75f, 1.0f, 1.0f,
+		0.75f, 0.75f, 1.0f, 1.0f,
+		0.75f, 0.75f, 1.0f, 1.0f,
+
+		0.8f, 0.8f, 0.8f, 1.0f,
+		0.8f, 0.8f, 0.8f, 1.0f,
+		0.8f, 0.8f, 0.8f, 1.0f,
+		0.8f, 0.8f, 0.8f, 1.0f,
+	};
+
+	private static final short[] indexData = {
+		0, 2, 1,
+		3, 2, 0,
+
+		4, 5, 6,
+		6, 7, 4,
+
+		8, 9, 10,
+		11, 13, 12,
+
+		14, 16, 15,
+		17, 16, 14,
 	};
 
 	private int offsetUniform, perspectiveMatrixUniform;
@@ -195,11 +219,49 @@ public class GLRenderer {
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexBufferObject);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, verticesBuffer, GL15.GL_STATIC_DRAW);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+
+
+		ShortBuffer indexesBuffer = BufferUtils.createShortBuffer(indexData.length);
+		indexesBuffer.put(indexData);
+		indexesBuffer.flip();
+
+		indexBufferObject = GL15.glGenBuffers();
+		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indexesBuffer, GL15.GL_STATIC_DRAW);
+		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
 	private void initializeVAO() {
-		vao = GL30.glGenVertexArrays();
-		GL30.glBindVertexArray(vao);
+		vao1 = GL30.glGenVertexArrays();
+		GL30.glBindVertexArray(vao1);
+
+		int colorDataOffset = FLOAT_BYTES * 3 * numvertices;
+
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexBufferObject);
+		GL20.glEnableVertexAttribArray(positionAttrib);
+		GL20.glEnableVertexAttribArray(colorAttrib);
+		GL20.glBindAttribLocation(theProgram, positionAttrib, "position");
+		GL20.glBindAttribLocation(theProgram, colorAttrib, "color");
+		GL20.glVertexAttribPointer(positionAttrib, 3, GL11.GL_FLOAT, false, 0, 0);
+		GL20.glVertexAttribPointer(colorAttrib, 4, GL11.GL_FLOAT, false, 0, colorDataOffset);
+		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+
+		GL30.glBindVertexArray(0);
+
+		vao2 = GL30.glGenVertexArrays();
+		GL30.glBindVertexArray(vao2);
+
+		int posDataOffset = FLOAT_BYTES * 3 * (numvertices / 2);
+		colorDataOffset += FLOAT_BYTES * 4 * (numvertices / 2);
+		GL20.glEnableVertexAttribArray(positionAttrib);
+		GL20.glEnableVertexAttribArray(colorAttrib);
+		GL20.glBindAttribLocation(theProgram, positionAttrib, "position");
+		GL20.glBindAttribLocation(theProgram, colorAttrib, "color");
+		GL20.glVertexAttribPointer(positionAttrib, 3, GL11.GL_FLOAT, false, 0, posDataOffset);
+		GL20.glVertexAttribPointer(colorAttrib, 4, GL11.GL_FLOAT, false, 0, colorDataOffset);
+		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+
+		GL30.glBindVertexArray(0);
 	}
 
 	private GLFWFramebufferSizeCallback getFramebufferSizeCallback() {
@@ -255,20 +317,15 @@ public class GLRenderer {
 
 		GL20.glUseProgram(theProgram);
 
-		GL20.glUniform2f(offsetUniform, -0.5f, -0.5f);
+		GL30.glBindVertexArray(vao1);
+		GL20.glUniform3f(offsetUniform, 0.0f, 0.0f, 0.0f);
+		GL11.glDrawElements(GL11.GL_TRIANGLES, indexData.length, GL11.GL_UNSIGNED_SHORT, 0);
 
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexBufferObject);
-		GL20.glEnableVertexAttribArray(positionAttrib);
-		GL20.glEnableVertexAttribArray(colorAttrib);
-		GL20.glBindAttribLocation(theProgram, positionAttrib, "position");
-		GL20.glBindAttribLocation(theProgram, colorAttrib, "color");
-		GL20.glVertexAttribPointer(positionAttrib, 4, GL11.GL_FLOAT, false, 0, 0);
-		GL20.glVertexAttribPointer(colorAttrib, 4, GL11.GL_FLOAT, false, 0, 4*4*3*12);
+		GL30.glBindVertexArray(vao2);
+		GL20.glUniform3f(offsetUniform, 0.0f, 0.0f, -1.0f);
+		GL11.glDrawElements(GL11.GL_TRIANGLES, indexData.length, GL11.GL_UNSIGNED_SHORT, 0);
 
-		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 36);
-
-		GL20.glDisableVertexAttribArray(0);
-		GL20.glDisableVertexAttribArray(1);
+		GL30.glBindVertexArray(0);
 		GL20.glUseProgram(0);
 	}
 }
