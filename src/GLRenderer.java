@@ -135,6 +135,8 @@ public class GLRenderer {
 
 	private int offsetUniform, perspectiveMatrixUniform;
 	private int positionAttrib, colorAttrib;
+	float[] perspectiveMatrix;
+	float fFrustumScale;
 
 
 	public GLRenderer (EventLogger l, long w) {
@@ -161,22 +163,22 @@ public class GLRenderer {
 		offsetUniform = GL20.glGetUniformLocation(theProgram, "offset");
 		perspectiveMatrixUniform = GL20.glGetUniformLocation(theProgram, "perspectiveMatrix");
 
-		float fFrustumScale = 1.0f;
+		fFrustumScale = 1.0f;
 		float fzNear = 0.5f;
 		float fzFar = 3.0f;
 
-		float[] theMatrix = new float[16];
-		for (int i = 0; i < theMatrix.length; i++)
-			theMatrix[i] = 0;
+		perspectiveMatrix = new float[16];
+		for (int i = 0; i < perspectiveMatrix.length; i++)
+			perspectiveMatrix[i] = 0;
 
-		theMatrix[0] = fFrustumScale;
-		theMatrix[5] = fFrustumScale;
-		theMatrix[10] = (fzFar + fzNear) / (fzNear - fzFar);
-		theMatrix[14] = (2 * fzFar * fzNear) / (fzNear - fzFar);
-		theMatrix[11] = -1.0f;
+		perspectiveMatrix[0] = fFrustumScale;
+		perspectiveMatrix[5] = fFrustumScale;
+		perspectiveMatrix[10] = (fzFar + fzNear) / (fzNear - fzFar);
+		perspectiveMatrix[14] = (2 * fzFar * fzNear) / (fzNear - fzFar);
+		perspectiveMatrix[11] = -1.0f;
 
-		FloatBuffer theMat = BufferUtils.createFloatBuffer(theMatrix.length);
-		theMat.put(theMatrix);
+		FloatBuffer theMat = BufferUtils.createFloatBuffer(perspectiveMatrix.length);
+		theMat.put(perspectiveMatrix);
 		theMat.flip();
 
 		GL20.glUseProgram(theProgram);
@@ -204,7 +206,6 @@ public class GLRenderer {
 		return new GLFWFramebufferSizeCallback() {
 			@Override
 			public void invoke (long window, int w, int h) {
-				logger.debug("Reshaping window [" + w + ", " + h + "]");
 				reshape(h, w);
 			}
 		};
@@ -215,6 +216,18 @@ public class GLRenderer {
 		//http://gamedev.stackexchange.com/questions/49674/opengl-resizing-display-and-glortho-glviewport
 		//http://www.acamara.es/blog/tag/lwjgl/
 	{
+		logger.debug("Reshaping window [" + width + ", " + height + "] " + ((float) width / height));
+		perspectiveMatrix[0] = fFrustumScale / ((float) width / height);
+		perspectiveMatrix[5] = fFrustumScale;
+
+		FloatBuffer theMat = BufferUtils.createFloatBuffer(perspectiveMatrix.length);
+		theMat.put(perspectiveMatrix);
+		theMat.flip();
+
+		GL20.glUseProgram(theProgram);
+		GL20.glUniformMatrix4(perspectiveMatrixUniform, false, theMat);
+		GL20.glUseProgram(0);
+
 		GL11.glViewport(0, 0, width, height);
 	}
 
@@ -242,7 +255,7 @@ public class GLRenderer {
 
 		GL20.glUseProgram(theProgram);
 
-		GL20.glUniform2f(offsetUniform, 0.5f, 0.5f);
+		GL20.glUniform2f(offsetUniform, -0.5f, -0.5f);
 
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexBufferObject);
 		GL20.glEnableVertexAttribArray(positionAttrib);
