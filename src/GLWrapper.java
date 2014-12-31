@@ -126,7 +126,7 @@ public class GLWrapper {
 			fps = frames;
 			frames = 0;
 			fpsFlushTime += 1.0;
-			logger.debug(fps + " FPS");
+			logger.debug(fps + " FPS" + "[" + totalFrames + " total]");
 		}
 
 		totalFrames++;

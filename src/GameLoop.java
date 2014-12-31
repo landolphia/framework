@@ -27,7 +27,7 @@ public class GameLoop {
 	private GLWrapper GLW;
 
 	final private String APP_VERSION = "0.0.0";
-	final private String APP_NAME = "FrameWork";
+	final private String APP_NAME = "framework";
 	final private double S_PER_UPDATE = 0.01;
 
 	double current, previous, lag;
