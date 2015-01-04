@@ -68,11 +68,10 @@ public class GLWrapper {
 			}
 		});
 
+		//window is set after this
 		setDisplayMode(fullscreen);
 
 		
-		input = new InputManager(logger, HEIGHT, WIDTH);
-		glfwSetKeyCallback(window, input.keyCallback);
 				
 		ByteBuffer vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
@@ -85,9 +84,11 @@ public class GLWrapper {
 		glfwShowWindow(window);
 
 		GLContext.createFromCurrent();
-		glClearColor(0.5f, 0.1f, 0.4f, 0.0f);
 
 		renderer = new GLRenderer(logger, window);
+
+		input = new InputManager(logger, renderer, HEIGHT, WIDTH);
+		glfwSetKeyCallback(window, input.keyCallback);
 	}
 
 	public void switchDisplayMode() {

@@ -28,19 +28,22 @@ class Action {
 
 public class InputManager {
 	private EventLogger logger;
+	private GLRenderer renderer;
 	public	GLFWKeyCallback keyCallback;
 
 	private HashMap<Integer, Action> actions;
 
 
-	public InputManager (EventLogger l, int h, int w) {
+	public InputManager (EventLogger l, GLRenderer r, int h, int w) {
 		logger = l;
 		logger.flow("InputManager init.");
 
+		renderer = r;
 
 		keyCallback = this.getCallback();
 
 		actions = new HashMap<Integer, Action>();
+		actions.put(GLFW.GLFW_KEY_F1, new Action(new DepthClamp(logger, renderer, "Toggling DepthClamp"), TRIGGER.DOWN));
 		actions.put(GLFW.GLFW_KEY_SPACE, new Action(new Test(logger, "It works!"), TRIGGER.DOWN));
 		actions.put(GLFW.GLFW_KEY_ESCAPE, new Action(new Quit(logger, "Escape key pressed"), TRIGGER.DOWN));
 	}

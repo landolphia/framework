@@ -32,3 +32,23 @@ class Quit implements Command {
 		logger.debug("User requested to quit:\t" + message);
 	}
 }
+
+class DepthClamp implements Command {
+	private EventLogger logger;
+	private String message;
+	private GLRenderer renderer;
+	private boolean on;
+
+	public DepthClamp (EventLogger l, GLRenderer r, String m) {
+		logger = l;
+		renderer = r;
+		message = new String(m);
+		on = false;
+	}
+
+	public void execute () {
+		renderer.switchDepthClamp(on);
+		logger.debug("DepthClamp: " + on + "\n\t" + message);
+		on = !on;
+	}
+}

@@ -310,7 +310,10 @@ public class GLRenderer {
 		GLFW.glfwSetFramebufferSizeCallback(window,  getFramebufferSizeCallback());
 	}
 
-
+	public void switchDepthClamp(boolean on) {
+		if (on) GL11.glEnable(GL32.GL_DEPTH_CLAMP);
+		else 	GL11.glDisable(GL32.GL_DEPTH_CLAMP);
+	}
 
 	public void update (double delta) {
 	}
@@ -324,7 +327,7 @@ public class GLRenderer {
 		GL20.glUseProgram(theProgram);
 
 		GL30.glBindVertexArray(vao1);
-		GL20.glUniform3f(offsetUniform, 0.0f, 0.0f, -1.0f);
+		GL20.glUniform3f(offsetUniform, 0.0f, 0.0f, 0.5f);
 		GL11.glDrawElements(GL11.GL_TRIANGLES, indexData.length, GL11.GL_UNSIGNED_SHORT, 0);
 
 		GL30.glBindVertexArray(vao2);
