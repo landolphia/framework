@@ -3,6 +3,7 @@ package framework;
 
 import framework.EventLogger;
 import framework.GLWrapper;
+import framework.AudioWrapper;
 
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.*;
@@ -12,7 +13,6 @@ import java.nio.ByteBuffer;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import java.io.File;
@@ -25,6 +25,7 @@ public class GameLoop {
 	private boolean silent, verbose;
 
 	private GLWrapper GLW;
+	private AudioWrapper AW;
 
 	final private String APP_VERSION = "0.0.0";
 	final private String APP_NAME = "framework";
@@ -40,7 +41,9 @@ public class GameLoop {
 		System.out.println(APP_NAME + " is launching...\n");
 
 		init(args);
-		gameloop();
+
+		AW = new AudioWrapper(logger);
+		//gameloop();
 
 		logger.flow("Bye.");
 	}
@@ -78,7 +81,7 @@ public class GameLoop {
 		logger.flow("Framework init.");
 		logger.info("Current platform = " + setNatives());
 
-		GLW = new GLWrapper(logger);
+		//GLW = new GLWrapper(logger);
 
 		done = 0;
 		previous = GLFW.glfwGetTime();

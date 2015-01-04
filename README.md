@@ -6,27 +6,32 @@ A Java game loop.
 #Quickstart
 
 Compile with
-<code><pre>
-javac -cp ../jar/disruptor.jar:../jar/lwjgl.jar:../jar/lwjgl_util.jar: -d . *.java
+<pre><code>
+javac -cp ../jar/minim.jar:../jar/disruptor.jar:../jar/lwjgl.jar:../j    ar/lwjgl_util.jar: -d . *.java
 </code></pre>
 
 Run with
-<code><pre>
-java -classpath ../jar/disruptor.jar:../jar/lwjgl.jar:../jar/lwjgl_util.jar: -Djava.library.path=../native/linux/x64/ framework.GameLoop
+<pre><code>
+java -classpath ../jar/jl1.0.jar:../jar/mp3spi1.9.4.jar:../jar/triton    us_share.jar:../jar/jsminim.jar:../jar/minim.jar:../jar/disruptor.jar:../jar/lwj    gl.jar:../jar/lwjgl_util.jar: -Djava.library.path=../native/linux/x64/ framework    .GameLoop
 </code></pre>
 
 note: you need to have the lwjgl3 jars in ../jar and the native in ../native
 
 tree ../jar
-<code><pre>
+<pre><code>
 ../jar/
 ├── disruptor.jar
+├── jl1.0.jar
+├── jsminim.jar
 ├── lwjgl.jar
-└── lwjgl_util.jar
+├── lwjgl_util.jar
+├── minim.jar
+├── mp3spi1.9.4.jar
+└── tritonus_share.jar
 </code></pre>
 
 tree ../native
-<code><pre>
+<pre><code>
 ../native/
 ├── linux
 │   ├── x64
