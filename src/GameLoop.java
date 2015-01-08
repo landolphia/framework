@@ -19,12 +19,15 @@ import java.io.File;
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.LWJGLUtil.Platform;
 
+import framework.Entity;
+
 
 public class GameLoop {
 	private EventLogger logger;
 	private boolean silent, verbose;
 
 	private GLWrapper GLW;
+	private Entity entity;
 
 	final private String APP_VERSION = "0.0.0";
 	final private String APP_NAME = "framework";
@@ -79,6 +82,7 @@ public class GameLoop {
 		logger.info("Current platform = " + setNatives());
 
 		GLW = new GLWrapper(logger);
+		entity = new Entity(logger, 2.1, true);
 
 		done = 0;
 		previous = GLFW.glfwGetTime();
@@ -98,8 +102,10 @@ public class GameLoop {
 				updatePasses++;
 				lag -= S_PER_UPDATE;
 				GLW.update(S_PER_UPDATE);
+				entity.update(S_PER_UPDATE);
 			}
 
+			entity.display(lag / S_PER_UPDATE);
 			done = GLW.display(lag / S_PER_UPDATE);
 			//TODO find a better way to yield
 			try { Thread.sleep(1);} catch (Exception e) { logger.error("Something happened while trying to yield: " + e.getMessage());}
