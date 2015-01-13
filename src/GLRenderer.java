@@ -8,9 +8,9 @@ import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.GL33;
 
 //TODO update when new util is available or find bsd licensed lib
-//import org.lwjgl.util.vector.Matrix4f;
-//import org.lwjgl.util.vector.Matrix3f;
-//import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Matrix3f;
+import org.lwjgl.util.vector.Vector3f;
 
 import org.lwjgl.glfw.*;
 
@@ -33,134 +33,109 @@ public class GLRenderer {
 
 	private int theProgram;
 	private int vertexBufferObject, indexBufferObject;
-	private int vao1, vao2;
+	private int vao;
 
-	private static final int numvertices = 36;
-
-	private static final float RIGHT_EXTENT = 0.8f;
-	private static final float LEFT_EXTENT = -RIGHT_EXTENT;
-	private static final float TOP_EXTENT = 0.2f;
-	private static final float MIDDLE_EXTENT = 0.0f;
-	private static final float BOTTOM_EXTENT = -TOP_EXTENT;
-	private static final float FRONT_EXTENT = -1.25f;
-	private static final float REAR_EXTENT = -1.75f;
+	private static final int numvertices = 24;
 
 	private static float[] vertexData = {
-		//Obj 1
-		LEFT_EXTENT, TOP_EXTENT, REAR_EXTENT,
-		LEFT_EXTENT, MIDDLE_EXTENT, FRONT_EXTENT,
-		RIGHT_EXTENT, MIDDLE_EXTENT, FRONT_EXTENT,
-		RIGHT_EXTENT, TOP_EXTENT, REAR_EXTENT,
+		//Front
+		1.0f, 1.0f, 1.0f,
+		1.0f, -1.0f, 1.0f,
+		-1.0f, -1.0f, 1.0f,
+		-1.0f, 1.0f, 1.0f,
 
-		LEFT_EXTENT, BOTTOM_EXTENT, REAR_EXTENT,
-		LEFT_EXTENT, MIDDLE_EXTENT, FRONT_EXTENT,
-		RIGHT_EXTENT, MIDDLE_EXTENT, FRONT_EXTENT,
-		RIGHT_EXTENT, BOTTOM_EXTENT, REAR_EXTENT,
+		//Top
+		1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, -1.0f,
+		1.0f, 1.0f, -1.0f,
 
-		LEFT_EXTENT, TOP_EXTENT, REAR_EXTENT,
-		LEFT_EXTENT, MIDDLE_EXTENT,  FRONT_EXTENT,
-		LEFT_EXTENT, BOTTOM_EXTENT,  REAR_EXTENT,
+		//Left
+		1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, 1.0f,
 
-		RIGHT_EXTENT,   TOP_EXTENT,             REAR_EXTENT,
-		RIGHT_EXTENT,   MIDDLE_EXTENT,  FRONT_EXTENT,
-		RIGHT_EXTENT,   BOTTOM_EXTENT,  REAR_EXTENT,
+		//Back
+		1.0f, 1.0f, -1.0f,
+		-1.0f, 1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
 
-		LEFT_EXTENT,    BOTTOM_EXTENT,  REAR_EXTENT,
-		LEFT_EXTENT,    TOP_EXTENT,             REAR_EXTENT,
-		RIGHT_EXTENT,   TOP_EXTENT,             REAR_EXTENT,
-		RIGHT_EXTENT,   BOTTOM_EXTENT,  REAR_EXTENT,
+		//Bottom
+		1.0f, -1.0f, 1.0f,
+		1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f, 1.0f,
 
-		//Obj 2
-		TOP_EXTENT,             RIGHT_EXTENT,   REAR_EXTENT,
-		MIDDLE_EXTENT,  RIGHT_EXTENT,   FRONT_EXTENT,
-		MIDDLE_EXTENT,  LEFT_EXTENT,    FRONT_EXTENT,
-		TOP_EXTENT,             LEFT_EXTENT,    REAR_EXTENT,
+		//Right
+		-1.0f, 1.0f, 1.0f,
+		-1.0f, -1.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, 1.0f, -1.0f,
 
-		BOTTOM_EXTENT,  RIGHT_EXTENT,   REAR_EXTENT,
-		MIDDLE_EXTENT,  RIGHT_EXTENT,   FRONT_EXTENT,
-		MIDDLE_EXTENT,  LEFT_EXTENT,    FRONT_EXTENT,
-		BOTTOM_EXTENT,  LEFT_EXTENT,    REAR_EXTENT,
+		0.0f, 1.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 0.0f, 1.0f,
 
-		TOP_EXTENT,             RIGHT_EXTENT,   REAR_EXTENT,
-		MIDDLE_EXTENT,  RIGHT_EXTENT,   FRONT_EXTENT,
-		BOTTOM_EXTENT,  RIGHT_EXTENT,   REAR_EXTENT,
+		0.0f, 0.0f, 1.0f, 1.0f,
+		0.0f, 0.0f, 1.0f, 1.0f,
+		0.0f, 0.0f, 1.0f, 1.0f,
+		0.0f, 0.0f, 1.0f, 1.0f,
 
-		TOP_EXTENT,             LEFT_EXTENT,    REAR_EXTENT,
-		MIDDLE_EXTENT,  LEFT_EXTENT,    FRONT_EXTENT,
-		BOTTOM_EXTENT,  LEFT_EXTENT,    REAR_EXTENT,
-
-		BOTTOM_EXTENT,  RIGHT_EXTENT,   REAR_EXTENT,
-		TOP_EXTENT,             RIGHT_EXTENT,   REAR_EXTENT,
-		TOP_EXTENT,             LEFT_EXTENT,    REAR_EXTENT,
-		BOTTOM_EXTENT,  LEFT_EXTENT,    REAR_EXTENT,
-
-		//Obj 1 cols
-		0.75f, 0.75f, 1.0f, 1.0f,
-		0.75f, 0.75f, 1.0f, 1.0f,
-		0.75f, 0.75f, 1.0f, 1.0f,
-		0.75f, 0.75f, 1.0f, 1.0f,
-
-		0.0f, 0.5f, 0.0f, 1.0f,
-		0.0f, 0.5f, 0.0f, 1.0f,
-		0.0f, 0.5f, 0.0f, 1.0f,
-		0.0f, 0.5f, 0.0f, 1.0f,
-
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-
-		//Obj 2 cols
 		1.0f, 0.0f, 0.0f, 1.0f,
 		1.0f, 0.0f, 0.0f, 1.0f,
 		1.0f, 0.0f, 0.0f, 1.0f,
 		1.0f, 0.0f, 0.0f, 1.0f,
 
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f, 1.0f,
+		1.0f, 1.0f, 0.0f, 1.0f,
+		1.0f, 1.0f, 0.0f, 1.0f,
+		1.0f, 1.0f, 0.0f, 1.0f,
+		1.0f, 1.0f, 0.0f, 1.0f,
 
-		0.0f, 0.5f, 0.0f, 1.0f,
-		0.0f, 0.5f, 0.0f, 1.0f,
-		0.0f, 0.5f, 0.0f, 1.0f,
+		0.0f, 1.0f, 1.0f, 1.0f,
+		0.0f, 1.0f, 1.0f, 1.0f,
+		0.0f, 1.0f, 1.0f, 1.0f,
+		0.0f, 1.0f, 1.0f, 1.0f,
 
-		0.75f, 0.75f, 1.0f, 1.0f,
-		0.75f, 0.75f, 1.0f, 1.0f,
-		0.75f, 0.75f, 1.0f, 1.0f,
-
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
-		0.8f, 0.8f, 0.8f, 1.0f,
+		1.0f, 0.0f, 1.0f, 1.0f,
+		1.0f, 0.0f, 1.0f, 1.0f,
+		1.0f, 0.0f, 1.0f, 1.0f,
+		1.0f, 0.0f, 1.0f, 1.0f,
 	};
 
 	private static final short[] indexData = {
-		0, 2, 1,
-		3, 2, 0,
+		0, 1, 2,
+		2, 3, 0,
 
 		4, 5, 6,
 		6, 7, 4,
 
-		8, 9, 10,
-		11, 13, 12,
+		8, 9, 10, 
+		10, 11, 8,
 
-		14, 16, 15,
-		17, 16, 14,
+		12, 13, 14, 
+		14, 15, 12, 
+
+		16, 17, 18, 
+		18, 19, 16, 
+
+		20, 21, 22, 
+		22, 23, 20, 
 	};
 
-	private int offsetUniform, perspectiveMatrixUniform;
+	private int modelToCameraMatrixUnif, cameraToClipMatrixUnif;
 	private int positionAttrib, colorAttrib;
-	float[] perspectiveMatrix;
-	float fFrustumScale;
+	float[] cameraToClipMatrix;
+
+	private float calcFrustumScale (float fov) /*DEG*/ {
+		final float degToRad = 3.14159f * 2.0f / 360.0f;
+		float rad = fov * degToRad;
+		return 1.0f / (float) Math.tan(rad / 2.0f);
+	}
+
+	float fFrustumScale = calcFrustumScale(45.0f);
 
 
 	public GLRenderer (EventLogger l, long w) {
@@ -184,56 +159,58 @@ public class GLRenderer {
 		positionAttrib = GL20.glGetAttribLocation(theProgram, "position");
 		colorAttrib = GL20.glGetAttribLocation(theProgram, "color");
 
-		offsetUniform = GL20.glGetUniformLocation(theProgram, "offset");
-		perspectiveMatrixUniform = GL20.glGetUniformLocation(theProgram, "perspectiveMatrix");
+		modelToCameraMatrixUnif = GL20.glGetUniformLocation(theProgram, "modelToCameraMatrix");
+		cameraToClipMatrixUnif = GL20.glGetUniformLocation(theProgram, "cameraToClipMatrix");
 
-		fFrustumScale = 1.0f;
-		float fzNear = 0.5f;
-		float fzFar = 3.0f;
+		//fFrustumScale = 1.0f;
+		float fzNear = 1.0f;
+		float fzFar = 45.0f;
 
-		perspectiveMatrix = new float[16];
-		for (int i = 0; i < perspectiveMatrix.length; i++)
-			perspectiveMatrix[i] = 0;
+		cameraToClipMatrix = new float[16];
+		for (int i = 0; i < cameraToClipMatrix.length; i++)
+			cameraToClipMatrix[i] = 0;
 
-		perspectiveMatrix[0] = fFrustumScale;
-		perspectiveMatrix[5] = fFrustumScale;
-		perspectiveMatrix[10] = (fzFar + fzNear) / (fzNear - fzFar);
-		perspectiveMatrix[14] = (2 * fzFar * fzNear) / (fzNear - fzFar);
-		perspectiveMatrix[11] = -1.0f;
+		cameraToClipMatrix[0] = fFrustumScale;
+		cameraToClipMatrix[5] = fFrustumScale;
+		cameraToClipMatrix[10] = (fzFar + fzNear) / (fzNear - fzFar);
+		cameraToClipMatrix[14] = (2 * fzFar * fzNear) / (fzNear - fzFar);
+		cameraToClipMatrix[11] = -1.0f;
 
-		FloatBuffer theMat = BufferUtils.createFloatBuffer(perspectiveMatrix.length);
-		theMat.put(perspectiveMatrix);
+		FloatBuffer theMat = BufferUtils.createFloatBuffer(cameraToClipMatrix.length);
+		theMat.put(cameraToClipMatrix);
 		theMat.flip();
 
 		GL20.glUseProgram(theProgram);
-		GL20.glUniformMatrix4(perspectiveMatrixUniform, false, theMat);
+		GL20.glUniformMatrix4(cameraToClipMatrixUnif, false, theMat);
 		GL20.glUseProgram(0);
 	}
 
-	private void initializeVertexBuffer() {
-		FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertexData.length);
-		verticesBuffer.put(vertexData);
-		verticesBuffer.flip();
+	private void initializeVAO() {
+		//Bork here is where I stopped coppying from tutorial source
+		FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertexData.length);
+		vertexBuffer.put(vertexData);
+		vertexBuffer.flip();
 
 		vertexBufferObject = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexBufferObject);
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, verticesBuffer, GL15.GL_STATIC_DRAW);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexBuffer, GL15.GL_STATIC_DRAW);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
 
-		ShortBuffer indexesBuffer = BufferUtils.createShortBuffer(indexData.length);
-		indexesBuffer.put(indexData);
-		indexesBuffer.flip();
+
+		ShortBuffer indexBuffer = BufferUtils.createShortBuffer(indexData.length);
+		indexBuffer.put(indexData);
+		indexBuffer.flip();
 
 		indexBufferObject = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indexesBuffer, GL15.GL_STATIC_DRAW);
+		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indexBuffer, GL15.GL_STATIC_DRAW);
 		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
-	}
 
-	private void initializeVAO() {
-		vao1 = GL30.glGenVertexArrays();
-		GL30.glBindVertexArray(vao1);
+
+
+		vao = GL30.glGenVertexArrays();
+		GL30.glBindVertexArray(vao);
 
 		int colorDataOffset = FLOAT_BYTES * 3 * numvertices;
 
@@ -243,21 +220,6 @@ public class GLRenderer {
 		GL20.glBindAttribLocation(theProgram, positionAttrib, "position");
 		GL20.glBindAttribLocation(theProgram, colorAttrib, "color");
 		GL20.glVertexAttribPointer(positionAttrib, 3, GL11.GL_FLOAT, false, 0, 0);
-		GL20.glVertexAttribPointer(colorAttrib, 4, GL11.GL_FLOAT, false, 0, colorDataOffset);
-		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-
-		GL30.glBindVertexArray(0);
-
-		vao2 = GL30.glGenVertexArrays();
-		GL30.glBindVertexArray(vao2);
-
-		int posDataOffset = FLOAT_BYTES * 3 * (numvertices / 2);
-		colorDataOffset += FLOAT_BYTES * 4 * (numvertices / 2);
-		GL20.glEnableVertexAttribArray(positionAttrib);
-		GL20.glEnableVertexAttribArray(colorAttrib);
-		GL20.glBindAttribLocation(theProgram, positionAttrib, "position");
-		GL20.glBindAttribLocation(theProgram, colorAttrib, "color");
-		GL20.glVertexAttribPointer(positionAttrib, 3, GL11.GL_FLOAT, false, 0, posDataOffset);
 		GL20.glVertexAttribPointer(colorAttrib, 4, GL11.GL_FLOAT, false, 0, colorDataOffset);
 		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
 
@@ -279,15 +241,15 @@ public class GLRenderer {
 		//http://www.acamara.es/blog/tag/lwjgl/
 	{
 		logger.debug("Reshaping window [" + width + ", " + height + "] " + ((float) width / height));
-		perspectiveMatrix[0] = fFrustumScale / ((float) width / height);
-		perspectiveMatrix[5] = fFrustumScale;
+		cameraToClipMatrix[0] = fFrustumScale / ((float) width / height);
+		cameraToClipMatrix[5] = fFrustumScale;
 
-		FloatBuffer theMat = BufferUtils.createFloatBuffer(perspectiveMatrix.length);
-		theMat.put(perspectiveMatrix);
+		FloatBuffer theMat = BufferUtils.createFloatBuffer(cameraToClipMatrix.length);
+		theMat.put(cameraToClipMatrix);
 		theMat.flip();
 
 		GL20.glUseProgram(theProgram);
-		GL20.glUniformMatrix4(perspectiveMatrixUniform, false, theMat);
+		GL20.glUniformMatrix4(cameraToClipMatrixUnif, false, theMat);
 		GL20.glUseProgram(0);
 
 		GL11.glViewport(0, 0, width, height);
@@ -295,7 +257,6 @@ public class GLRenderer {
 
 	private void init () {
 		initializeProgram();
-		initializeVertexBuffer();
 		initializeVAO();
 
 		GL11.glEnable(GL11.GL_CULL_FACE);
@@ -320,13 +281,17 @@ public class GLRenderer {
 
 
 	public void display () {
+		//XXX This is where I stopped, nothing works
+		//I've just finished the init (vao and such)
+		//Now I have to work on the actual hierarchy
+		//http://www.arcsynthesis.org/gltut/Positioning/Tut06%20Fun%20with%20Matrices.html
 		GL11.glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 		GL11.glClearDepth(1.0f);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
 		GL20.glUseProgram(theProgram);
 
-		GL30.glBindVertexArray(vao1);
+		GL30.glBindVertexArray(vao);
 		GL20.glUniform3f(offsetUniform, 0.0f, 0.0f, 0.5f);
 		GL11.glDrawElements(GL11.GL_TRIANGLES, indexData.length, GL11.GL_UNSIGNED_SHORT, 0);
 
