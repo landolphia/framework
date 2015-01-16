@@ -35,9 +35,9 @@ public class GLHierarchy {
 	private Vector3f posLeftFinger, posRightFinger;
 	private float angFingerOpen, lenFinger, widthFinger, angLowerFinger;
 
-	int theProgram, vao;
-	int modelToCameraMatrixUniform;
-	int indexDataLength;
+	private int theProgram, vao;
+	private int modelToCameraMatrixUniform;
+	private int indexDataLength;
 
 	public GLHierarchy (EventLogger l, int p, int v, int m, int i) {
 		logger = l;
@@ -149,14 +149,13 @@ public class GLHierarchy {
 		angFingerOpen = clamp(angFingerOpen, 9.0f, 180.0f);
 	}
 
-	public void writePose() {
-		logger.debug("angBase: " + angBase);
-		logger.debug("angUpperArm: " + angUpperArm);
-		logger.debug("angLowerArm: " + angLowerArm);
-		logger.debug("angWristPitch: " + angWristPitch);
-		logger.debug("angWristRoll: " + angWristRoll);
-		logger.debug("angFingerOpen: " + angFingerOpen);
-		logger.debug("");
+	public String toString() {
+		return	"angBase: " + angBase +
+			"\nangUpperArm: " + angUpperArm +
+			"\nangLowerArm: " + angLowerArm +
+			"\nangWristPitch: " + angWristPitch +
+			"\nangWristRoll: " + angWristRoll +
+			"\nangFingerOpen: " + angFingerOpen;
 	}
 
 	private void drawFingers (GLMatrixStack modelToCameraStack) {

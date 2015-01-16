@@ -13,7 +13,7 @@ public class GLMatrixStack {
 
 	public GLMatrixStack (EventLogger l) {
 		logger = l;
-		logger.flow("GLMatrixStack init");
+		//logger.flow("GLMatrixStack init");
 
 		matrices = new Stack<Matrix4f>();
 		currentMatrix = new Matrix4f();
@@ -27,7 +27,7 @@ public class GLMatrixStack {
 		out.m33 = 1.0f;
 
 		out.m00 = in.m00; out.m01 = in.m01; out.m02 = in.m02;
-		out.m10 = in.m10; out.m11 = in.m11; out.m12 = in.m12;               
+		out.m10 = in.m10; out.m11 = in.m11; out.m12 = in.m12; 
 		out.m20 = in.m20; out.m21 = in.m21; out.m22 = in.m22;
 		return out;
 	}   

@@ -21,11 +21,13 @@ import org.lwjgl.BufferUtils;
 import java.util.ArrayList;
 
 import framework.GLShaders;
+import framework.GLHierarchy;
 
 
 public class GLRenderer {
 	private EventLogger 	logger;
 	private GLShaders	shaders;
+	public	GLHierarchy	hierarchy;
 
 	private long window;
 
@@ -147,6 +149,8 @@ public class GLRenderer {
 		window = w;
 
 		init();
+
+		hierarchy = new GLHierarchy(logger, theProgram, vao, modelToCameraMatrixUnif, indexData.length);
 	}
 
 	private void initializeProgram () {
@@ -186,7 +190,6 @@ public class GLRenderer {
 	}
 
 	private void initializeVAO() {
-		//Bork here is where I stopped coppying from tutorial source
 		FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertexData.length);
 		vertexBuffer.put(vertexData);
 		vertexBuffer.flip();
@@ -289,17 +292,6 @@ public class GLRenderer {
 		GL11.glClearDepth(1.0f);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
-		GL20.glUseProgram(theProgram);
-
-		GL30.glBindVertexArray(vao);
-		GL20.glUniform3f(offsetUniform, 0.0f, 0.0f, 0.5f);
-		GL11.glDrawElements(GL11.GL_TRIANGLES, indexData.length, GL11.GL_UNSIGNED_SHORT, 0);
-
-		GL30.glBindVertexArray(vao2);
-		GL20.glUniform3f(offsetUniform, 0.0f, 0.0f, -1.0f);
-		GL11.glDrawElements(GL11.GL_TRIANGLES, indexData.length, GL11.GL_UNSIGNED_SHORT, 0);
-
-		GL30.glBindVertexArray(0);
-		GL20.glUseProgram(0);
+		hierarchy.draw();
 	}
 }
