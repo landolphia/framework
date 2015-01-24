@@ -1,6 +1,5 @@
 package framework;
 
-
 import framework.EventLogger;
 import framework.GLWrapper;
 

@@ -36,6 +36,7 @@ class ConsoleFormatter extends Formatter {
 		else if (l == Level.INFO) { color = GREEN;}
 		else if (l == Level.WARNING) { color = BLUE;}
 		else if (l == Level.SEVERE) { color = RED;}
+		else if (l == Level.CONFIG) { color = CYAN;}
 		
 		StringBuffer buffer = new StringBuffer();
 
@@ -132,6 +133,10 @@ public class EventLogger {
 	public void error (float f) { log(Level.SEVERE, Thread.currentThread().getStackTrace(),Float.toString(f));}
 	public void error (String m) { log(Level.SEVERE, Thread.currentThread().getStackTrace(), m);}
 
+	public void lua (int i) { log(Level.CONFIG, Thread.currentThread().getStackTrace(), Integer.toString(i));}
+	public void lua (float f) { log(Level.CONFIG, Thread.currentThread().getStackTrace(),Float.toString(f));}
+	public void lua (String m) { log(Level.CONFIG, Thread.currentThread().getStackTrace(), m);}
+
 	private void log (Level l, StackTraceElement[] stack, int i) { log(l, stack, Integer.toString(i));}
 	private void log (Level l, StackTraceElement[] stack, float f) { log(l, stack, Float.toString(f));}
 	private void log (Level l, StackTraceElement[] stack, String m) {
@@ -139,7 +144,7 @@ public class EventLogger {
 		source = source.substring(source.lastIndexOf(".") + 1);
 		String method = stack[2].getMethodName();
 		Integer line = stack[2].getLineNumber();
-		if (l != Level.WARNING) {
+		if (l != Level.WARNING || l != Level.CONFIG) {
 			String from = "(" + source + ")@" + line.toString() + " -> " + method;
 			logger.log(l, from + ": " + m); 
 		} else { logger.log(l, m);}
