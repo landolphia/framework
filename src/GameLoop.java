@@ -1,8 +1,5 @@
 package framework;
 
-import framework.EventLogger;
-import framework.GLWrapper;
-
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -18,8 +15,6 @@ import java.io.File;
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.LWJGLUtil.Platform;
 
-import framework.Entity;
-
 
 public class GameLoop {
 	private EventLogger logger;
@@ -28,8 +23,10 @@ public class GameLoop {
 	private boolean silent, verbose;
 	private boolean fullscreen;
 
+	//framework
 	private GLWrapper GLW;
 	private Entity entity;
+	private LuaClient lua;
 
 	final private String APP_VERSION = "0.0.0";
 	final private String APP_NAME = "framework";
@@ -46,7 +43,8 @@ public class GameLoop {
 		System.out.println(APP_NAME + " is launching...\n");
 
 		init(args);
-		gameloop();
+		lua = new LuaClient(logger, "conf.lua");
+		//gameloop();
 
 		logger.flow("Bye.");
 	}

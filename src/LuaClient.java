@@ -20,9 +20,11 @@ public class LuaClient {
 		chunk = globals.loadfile("../resources/scripts/" + file);
 		chunk.call();
 
-		LuaValue log = globals.get("log");
-		LuaValue res = log.call("connect");
-		log(file + "> " + res.toString());
+		LuaValue fullscreen = globals.get("fullscreen");
+		logger.debug("fullscreen = " + fullscreen.toString());
+		//LuaValue log = globals.get("log");
+		//LuaValue res = log.call("connect");
+		//log(file + "> " + res.toString());
 	}
 
 	public String call (String f, LuaValue a, LuaValue b, LuaValue c) {	
