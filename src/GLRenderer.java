@@ -274,6 +274,12 @@ public class GLRenderer {
 		GLFW.glfwSetFramebufferSizeCallback(window,  getFramebufferSizeCallback());
 	}
 
+	public void updateWindow (long w) {
+		logger.debug("Trying to just change the value and set the frame buffer size callback");
+		window = w;
+		GLFW.glfwSetFramebufferSizeCallback(window,  getFramebufferSizeCallback());
+	}
+
 	public void switchDepthClamp(boolean on) {
 		if (on) GL11.glEnable(GL32.GL_DEPTH_CLAMP);
 		else 	GL11.glDisable(GL32.GL_DEPTH_CLAMP);

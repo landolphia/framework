@@ -17,6 +17,10 @@ public class CLIArguments {
 				case "s":
 					game.setSilentLogger();
 					break;
+				case "fullscreen":
+				case "f":
+					game.setFullscreen();
+					break;
 				case "help":
 				case "h":
 					System.out.println("\nHelp\n----\n");

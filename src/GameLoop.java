@@ -23,7 +23,10 @@ import framework.Entity;
 
 public class GameLoop {
 	private EventLogger logger;
+	
+	//Options
 	private boolean silent, verbose;
+	private boolean fullscreen;
 
 	private GLWrapper GLW;
 	private Entity entity;
@@ -37,6 +40,7 @@ public class GameLoop {
 	
 	public void setSilentLogger () { silent = true;}
 	public void setVerboseLogger () { verbose = true;}
+	public void setFullscreen() { fullscreen = true;}
 
 	public void run(String[] args) {
 		System.out.println(APP_NAME + " is launching...\n");
@@ -73,6 +77,7 @@ public class GameLoop {
 	private void init(String[] args) {
 		silent = false;
 		verbose = false;
+		fullscreen = false;
 		boolean argsRes = !CLIArguments.parseArgs(this, args);
 		if (argsRes) logger.info("Invalid argument found (and ignored).");
 
@@ -80,7 +85,7 @@ public class GameLoop {
 		logger.flow("Framework init.");
 		logger.info("Current platform = " + setNatives());
 
-		GLW = new GLWrapper(logger);
+		GLW = new GLWrapper(logger, fullscreen);
 		entity = new Entity(logger, 2.1, true);
 
 		done = 0;

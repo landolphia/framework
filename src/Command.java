@@ -5,6 +5,23 @@ public interface Command {
 	public abstract void execute();
 }
 
+class Fullscreen implements Command {
+	private EventLogger logger;
+	private GLWrapper wrapper;
+	private String message;
+
+	public Fullscreen (EventLogger l, String m, GLWrapper w) {
+		logger = l;
+		message = new String(m);
+		wrapper = w;
+	}
+
+	public void execute () {
+		logger.debug("Fullscreen toggle:\t" + message);
+		wrapper.switchDisplayMode();
+	}
+}
+
 class Quit implements Command {
 	private EventLogger logger;
 	private String message;

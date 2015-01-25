@@ -27,17 +27,13 @@ public class Entity {
 	}
 
 	public void update(double spu) {
-		logger.debug("Entity update, [" + spu + " spu]");
 		if (clockwise)
 			angle += velocity * spu;
 		else
 			angle -= velocity * spu;
-		logger.debug("angle = " + angle + " (@" + velocity + "rad/s)");
 	}
 
 	public void display(double interpol) {
 		double prediction = ( velocity * interpol );
-		logger.debug("Entity display.");
-		logger.debug("interpolated offset = " + prediction + "(interpol = " + interpol + ")");
 	}
 }

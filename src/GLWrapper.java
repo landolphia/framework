@@ -41,12 +41,12 @@ public class GLWrapper {
 	private GLFWErrorCallback 	errorCallback;
 	private long 			window;
 
-	public GLWrapper (EventLogger l) {
+	public GLWrapper (EventLogger l, boolean f) {
 		logger = l;
 		logger.flow("GLWrapper init.");
 		logger.info("LWJGL " + Sys.getVersion());
 
-		fullscreen = false;
+		fullscreen = f;
 
 		fpsFlushTime = glfwGetTime();
 		frames = 0;
@@ -70,9 +70,12 @@ public class GLWrapper {
 
 		//window is set after this
 		setDisplayMode(fullscreen);
-
 		
-				
+		//BOKBOK
+		
+		// I'm working on a live fullscreen toggle
+		// It seemd it would mean creating a new renderer (since the window changes)
+		// Unless I can just swap window's value in the renderer
 		ByteBuffer vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
 		glfwSetWindowPos(
@@ -87,13 +90,16 @@ public class GLWrapper {
 
 		renderer = new GLRenderer(logger, window);
 
-		input = new InputManager(logger, renderer, HEIGHT, WIDTH);
+		input = new InputManager(logger, renderer, this, HEIGHT, WIDTH);
 		glfwSetKeyCallback(window, input.keyCallback);
+				
 	}
 
 	public void switchDisplayMode() {
 		fullscreen = !fullscreen;
+		glfwDestroyWindow(window);
 		setDisplayMode(fullscreen);
+		renderer.updateWindow(window);
 	}
 
 	private void setDisplayMode(boolean f) {
@@ -113,7 +119,11 @@ public class GLWrapper {
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-		window = glfwCreateWindow(WIDTH, HEIGHT, "REPLACE THIS TEXT", NULL, NULL);
+		if (fullscreen) {
+			window = glfwCreateWindow(WIDTH, HEIGHT, "REPLACE THIS TEXT WITH APP NAME", glfwGetPrimaryMonitor(), NULL);
+		} else {
+			window = glfwCreateWindow(WIDTH, HEIGHT, "REPLACE THIS TEXT WITH APP NAME", NULL, NULL);
+		}
 
 
 		if ( window == NULL ) {
