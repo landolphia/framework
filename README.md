@@ -1,7 +1,7 @@
 framework
 =========
 
-A Java game loop.
+An unfinished Java game loop.
 
 #Quickstart
 
